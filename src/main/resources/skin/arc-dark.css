@@ -1,0 +1,42 @@
+{
+    -black-dark: #141A1F;
+    -black: #1A2128;
+    -black-light: #28343E;
+    -white-dark: #6B859E;
+    -white: #A6B5C5;
+    -white-light: #C0D4E3;
+    -blue-dark: #3890E9;
+    -blue: #7DBEFF;
+    -purple-dark: #A359ED;
+    -purple: #CB96FF;
+    -red-dark: #EC5252;
+    -red: #FF9191;
+    -orange-dark: #C97016;
+    -orange: #EDA55D;
+    -green-dark: #5DA713;
+    -green: #9ACD68;
+    -aqua-dark: #13AFAF;
+    -aqua: #6ECFCF;
+}
+
+.root {
+    -fx-background-color: -black;
+    -fx-text-fill: -white;
+}
+
+.viewport {
+    -fx-border-width: 3px;
+    -fx-border-style: solid;
+    -fx-border-color: -black-dark;
+}
+
+.titleBar {
+    -fx-background-color: -black-dark;
+    -fx-padding: 9px;
+}
+
+.titleBar .title {
+    -fx-fill: -white;
+    -fx-font-weight: bold;
+    -fx-font-family: "Roboto Light";
+}

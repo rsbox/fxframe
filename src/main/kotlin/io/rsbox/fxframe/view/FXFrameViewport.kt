@@ -11,6 +11,7 @@ import tornadofx.borderpane
 class FXFrameViewport : View() {
 
     private val controller: FXFrameController by inject()
+    private val titleBar: FXFrameTitleBar by inject()
 
     /**
      * Resizing delta vars
@@ -139,6 +140,14 @@ class FXFrameViewport : View() {
             dy = it.screenY
             dw = primaryStage.width
             dh = primaryStage.height
+
+            if(north) {
+                titleBar.disableDrag = true
+            }
+        }
+
+        setOnMouseReleased {
+            titleBar.disableDrag = false
         }
 
         setOnMouseDragged {

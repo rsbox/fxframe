@@ -13,7 +13,7 @@ import kotlin.system.exitProcess
 /**
  * Represents the top title bar and menu in the viewport.
  */
-class FXFrameTitleBar : Fragment() {
+class FXFrameTitleBar : View() {
 
     /**
      * Injected lazy controller.
@@ -26,7 +26,7 @@ class FXFrameTitleBar : Fragment() {
     private var dx = 0.0
     private var dy = 0.0
 
-    private var disableDrag = false
+    internal var disableDrag = false
 
     override val root = hbox(spacing = 12) {
         styleClass.add("titleBar")

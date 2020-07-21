@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version Project.kotlinVersion
     id("org.openjfx.javafxplugin") version Plugin.openjfx
+    id("com.jfrog.bintray") version Plugin.bintray
     `maven-publish`
 }
 
@@ -16,7 +17,7 @@ javafx {
 allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
-    group = "io.rsbox.fxframe"
+    group = "io.rsbox"
     version = Project.version
 
     repositories {
@@ -41,32 +42,46 @@ allprojects {
     }
 }
 
-@Suppress("DEPRECATION")
-val sourcesJar by tasks.registering(Jar::class) {
-    classifier = "sources"
-    from(sourceSets.main.get().allSource)
+val sourcesJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets.getByName("main").allSource)
 }
 
 publishing {
     publications {
-        create<MavenPublication>("release") {
-            groupId = "io.rsbox.fxframe"
+        create<MavenPublication>("maven") {
+            groupId = "io.rsbox"
             artifactId = "fxframe"
             version = Project.version
+
             from(components["java"])
-            artifact(sourcesJar.get())
+            artifact(sourcesJar)
         }
+    }
+}
 
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/rsbox/fxframe")
+bintray {
+    user = System.getenv("BINTRAY_USERNAME")
+    key = System.getenv("BINTRAY_TOKEN")
+    publish = true
 
-                credentials {
-                    username = System.getenv("GITHUB_ACTOR")
-                    password = System.getenv("GITHUB_TOKEN")
-                }
-            }
+    setPublications("maven")
+
+    pkg.apply {
+        repo = "fxframe"
+        name = "fxframe"
+        userOrg = "rsbox"
+        githubRepo = "https://github.com/rsbox/fxframe"
+        description = "A TornadoFX Borderless Window Extension Library"
+        setLabels("kotlin", "javafx", "tornadofx")
+        setLicenses("MIT")
+        desc = description
+        websiteUrl = "https://rsbox.io"
+        issueTrackerUrl = "https://github.com/rsbox/fxframe/issues"
+        githubReleaseNotesFile = "README.md"
+
+        version.apply {
+            name = Project.version
         }
     }
 }

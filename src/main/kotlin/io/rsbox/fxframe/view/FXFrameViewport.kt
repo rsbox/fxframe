@@ -1,7 +1,7 @@
-package org.framefx.view
+package io.rsbox.fxframe.view
 
 import javafx.scene.Cursor
-import org.framefx.controller.FXFrameController
+import io.rsbox.fxframe.controller.FXFrameController
 import tornadofx.View
 import tornadofx.borderpane
 

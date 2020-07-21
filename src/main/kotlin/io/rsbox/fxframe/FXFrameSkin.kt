@@ -1,4 +1,4 @@
-package org.framefx
+package io.rsbox.fxframe
 
 enum class FXFrameSkin(val stylesheet: String) {
 

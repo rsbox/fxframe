@@ -1,4 +1,4 @@
-package org.framefx
+package io.rsbox.fxframe
 
 import tornadofx.Stylesheet
 import java.awt.Color

@@ -1,12 +1,12 @@
-package org.framefx.view
+package io.rsbox.fxframe.view
 
 import javafx.geometry.Pos
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.Priority
 import javafx.scene.text.Font
-import org.framefx.FXFrameStyle
-import org.framefx.controller.FXFrameController
-import org.framefx.graphic.TitleBarIconFactory
+import io.rsbox.fxframe.FXFrameStyle
+import io.rsbox.fxframe.controller.FXFrameController
+import io.rsbox.fxframe.graphic.TitleBarIconFactory
 import tornadofx.*
 import kotlin.system.exitProcess
 

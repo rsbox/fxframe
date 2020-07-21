@@ -1,1 +1,1 @@
-rootProject.name = "framefx"
+rootProject.name = "fxframe"

@@ -16,7 +16,7 @@ javafx {
 allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 
-    group = "org.framefx"
+    group = "io.rsbox.fxframe"
     version = Project.version
 
     repositories {

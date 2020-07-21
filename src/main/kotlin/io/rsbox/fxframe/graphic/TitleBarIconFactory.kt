@@ -1,4 +1,4 @@
-package org.framefx.graphic
+package io.rsbox.fxframe.graphic
 
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.image.Image

@@ -1,4 +1,6 @@
 # FXFrame
+![release](https://github.com/rsbox/fxframe/workflows/release/badge.svg?event=release)
+
 A TornadoFX extension framework which allows a simple construction of custom
 borderless JavaFX stages which behave like native windows.
 

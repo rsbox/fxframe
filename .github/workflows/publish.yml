@@ -1,13 +1,13 @@
-name: release
+name: publish
 
 on:
-  push:
-    branches:
-      - develop
+  release:
+    types: [published]
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
@@ -24,17 +24,10 @@ jobs:
           java-version: 11
       - name: Building
         run: ./gradlew build -x test
-      - name: Building Jar
-        run: ./gradlew jar
-      - name: Creating Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Publishing Artifact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Body Content Requires Updating
-          draft: true
-          prerelease: false
+        run: |
+          NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3)
+          echo "New Version: ${NEW_VERSION}"
+          ./gradlew -Pversion=${NEW_VERSION} publish

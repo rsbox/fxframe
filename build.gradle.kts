@@ -60,7 +60,7 @@ publishing {
         repositories {
             maven {
                 name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/rsbox")
+                url = uri("https://maven.pkg.github.com/rsbox/fxframe")
 
                 credentials {
                     username = System.getenv("GITHUB_ACTOR")

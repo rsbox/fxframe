@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version Project.kotlinVersion
     id("org.openjfx.javafxplugin") version Plugin.openjfx
+    `maven-publish`
 }
 
 tasks.withType<Wrapper> {
@@ -19,6 +20,7 @@ allprojects {
     version = Project.version
 
     repositories {
+        mavenLocal()
         mavenCentral()
         jcenter()
     }
@@ -35,6 +37,24 @@ allprojects {
         }
         compileTestKotlin {
             kotlinOptions.jvmTarget = Project.jvmVersion.toString()
+        }
+    }
+}
+
+@Suppress("DEPRECATION")
+val sourcesJar by tasks.registering(Jar::class) {
+    classifier = "sources"
+    from(sourceSets.main.get().allSource)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("maven") {
+            groupId = "org.framefx"
+            artifactId = "framefx"
+            version = Project.version
+            from(components["java"])
+            artifact(sourcesJar.get())
         }
     }
 }

@@ -19,10 +19,4 @@ class FXFrameController : Controller() {
      * The stage / window icon.
      */
     var icon: Image? = null
-
-    /**
-     * Window control statuses
-     */
-    var maximized: Boolean = false
-    var minimized: Boolean = false
 }

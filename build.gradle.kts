@@ -51,7 +51,7 @@ publishing {
     publications {
         create<MavenPublication>("release") {
             groupId = "io.rsbox.fxframe"
-            artifactId = "framefx"
+            artifactId = "fxframe"
             version = Project.version
             from(components["java"])
             artifact(sourcesJar.get())

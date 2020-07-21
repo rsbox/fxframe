@@ -10,7 +10,7 @@ GitHub maven repository.
 
 ```kotlin
 repositories {
-    maven(url = "https://maven.pkg.github.com/rsbox")
+    maven(url = "https://maven.pkg.github.com/rsbox/fxframe")
 }
 ```
 
@@ -19,7 +19,7 @@ Add the following dependency. **NOTE:** You must also have JavaFX and TornadoFX
  
 ```kotlin
 dependencies {
-    implementation("io.rsbox.fxframe:fxframe:1.0.0")
+    implementation("io.rsbox.fxframe:fxframe:1.0.2")
 }
 ```
 

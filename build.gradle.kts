@@ -49,12 +49,24 @@ val sourcesJar by tasks.registering(Jar::class) {
 
 publishing {
     publications {
-        register<MavenPublication>("maven") {
-            groupId = "org.framefx"
+        create<MavenPublication>("release") {
+            groupId = "io.rsbox.fxframe"
             artifactId = "framefx"
             version = Project.version
             from(components["java"])
             artifact(sourcesJar.get())
+        }
+
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/rsbox")
+
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
         }
     }
 }

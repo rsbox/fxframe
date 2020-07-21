@@ -25,7 +25,7 @@ jobs:
       - name: Building
         run: ./gradlew build -x test
       - name: Building Jar
-        run: ./gradlew shadowJar
+        run: ./gradlew jar
       - name: Creating Release
         id: create_release
         uses: actions/create-release@v1
@@ -38,3 +38,11 @@ jobs:
             Body Content Requires Updating
           draft: true
           prerelease: false
+      - name: Publish Artifact
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3)
+          echo "New Version: ${NEW_VERSION}"
+          echo "GitHub Username: ${GITHUB_ACTOR}"
+          ./gradlew -Pversion=${NEW_VERSION} publish

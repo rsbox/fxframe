@@ -33,7 +33,7 @@ Add the following dependency. **NOTE:** You must also have JavaFX and TornadoFX
  
 ```kotlin
 dependencies {
-    implementation("io.rsbox:fxframe:1.0.3")
+    implementation("io.rsbox:fxframe:1.1.0")
 }
 ```
 
@@ -57,3 +57,6 @@ class ExampleApp : FXFrameApp() {
     }
 }
 ```
+
+## Future Plans
+

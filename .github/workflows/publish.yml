@@ -26,8 +26,6 @@ jobs:
         run: ./gradlew build -x test
       - name: Publishing Artifact
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3)
-          echo "New Version: ${NEW_VERSION}"
-          ./gradlew -Pversion=${NEW_VERSION} publish
+          BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
+          BINTRAY_TOKEN: ${{ secrets.BINTRAY_TOKEN }}
+        run: ./gradlew bintrayUpload

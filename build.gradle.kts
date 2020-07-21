@@ -71,15 +71,9 @@ bintray {
         repo = "fxframe"
         name = "fxframe"
         userOrg = "rsbox"
-        githubRepo = "https://github.com/rsbox/fxframe"
         description = "A TornadoFX Borderless Window Extension Library"
         setLabels("kotlin", "javafx", "tornadofx")
         setLicenses("MIT")
-        desc = description
-        websiteUrl = "https://rsbox.io"
-        issueTrackerUrl = "https://github.com/rsbox/fxframe/issues"
-        githubReleaseNotesFile = "README.md"
-
         version.apply {
             name = Project.version
         }

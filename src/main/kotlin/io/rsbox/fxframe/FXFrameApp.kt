@@ -1,10 +1,10 @@
-package org.framefx
+package io.rsbox.fxframe
 
 import javafx.scene.image.Image
 import javafx.stage.Stage
 import javafx.stage.StageStyle
-import org.framefx.controller.FXFrameController
-import org.framefx.view.FXFrameViewport
+import io.rsbox.fxframe.controller.FXFrameController
+import io.rsbox.fxframe.view.FXFrameViewport
 import tornadofx.App
 import tornadofx.UIComponent
 import tornadofx.importStylesheet

@@ -1,4 +1,4 @@
-package org.framefx.controller
+package io.rsbox.fxframe.controller
 
 import javafx.scene.image.Image
 import tornadofx.Controller

@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Project {
-    const val version = "1.0.2"
+    const val version = "1.0.3"
     const val kotlinVersion = "1.3.72"
     const val gradleVersion = "6.3"
     val jvmVersion = JavaVersion.VERSION_11

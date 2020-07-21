@@ -42,13 +42,20 @@ allprojects {
     }
 }
 
+val sourcesJar by tasks.creating(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets.getByName("main").allSource)
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "io.rsbox"
             artifactId = "fxframe"
             version = Project.version
+
             from(components["java"])
+            artifact(sourcesJar)
         }
     }
 }
@@ -65,7 +72,14 @@ bintray {
         name = "fxframe"
         userOrg = "rsbox"
         githubRepo = "https://github.com/rsbox/fxframe"
+        description = "A TornadoFX Borderless Window Extension Library"
+        setLabels("kotlin", "javafx", "tornadofx")
         setLicenses("MIT")
+        desc = description
+        websiteUrl = "https://rsbox.io"
+        issueTrackerUrl = "https://github.com/rsbox/fxframe/issues"
+        githubReleaseNotesFile = "README.md"
+
         version.apply {
             name = Project.version
         }

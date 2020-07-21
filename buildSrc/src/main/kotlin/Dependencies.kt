@@ -9,6 +9,7 @@ object Project {
 
 object Plugin {
     const val openjfx = "0.0.9"
+    const val bintray = "1.8.5"
 }
 
 object Library {

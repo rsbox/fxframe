@@ -19,7 +19,9 @@ class TestApp : FXFrameApp() {
 
     init {
         setFXFrameIcon(Image("/icon.png"))
+    }
 
+    override fun preload() {
         /**
          * Enable controls
          */

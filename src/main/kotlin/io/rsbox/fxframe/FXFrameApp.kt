@@ -27,6 +27,12 @@ abstract class FXFrameApp : App(FXFrameViewport::class, FXFrameStyle::class) {
     abstract val view: UIComponent
 
     /**
+     * Invoked once all components in JavaFX are initialized right before the
+     * primary stage is displayed.
+     */
+    open fun preload() { }
+
+    /**
      * Sets the Stage window icon.
      */
     fun setFXFrameIcon(icon: Image) {
@@ -62,12 +68,14 @@ abstract class FXFrameApp : App(FXFrameViewport::class, FXFrameStyle::class) {
          * Set the view
          */
         controller.initView = view
-
         super.init()
     }
 
     override fun start(stage: Stage) {
         stage.initStyle(StageStyle.UNDECORATED)
         super.start(stage)
+
+        this.preload()
+        controller.init()
     }
 }

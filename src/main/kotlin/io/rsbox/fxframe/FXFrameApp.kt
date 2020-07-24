@@ -44,7 +44,7 @@ abstract class FXFrameApp : App(FXFrameViewport::class, FXFrameStyle::class) {
      * Enables window dragging.
      */
     fun enableMoving(node: Node = find<FXFrameTitleBar>().root) {
-        controller.moveHandle.value = node
+        controller.moveHandle = node
     }
 
     /**

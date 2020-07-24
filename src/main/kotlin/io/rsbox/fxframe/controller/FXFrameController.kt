@@ -1,16 +1,16 @@
 package io.rsbox.fxframe.controller
 
 import io.rsbox.fxframe.view.FXFrameViewport
+import javafx.animation.Interpolator
 import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Rectangle2D
 import javafx.scene.Node
 import javafx.scene.image.Image
+import javafx.scene.input.MouseButton
 import javafx.stage.Screen
-import tornadofx.Controller
-import tornadofx.UIComponent
-import tornadofx.onChangeOnce
-import tornadofx.singleAssign
+import tornadofx.*
 
 /**
  * The FXFrame borderless frame window controller.
@@ -38,12 +38,12 @@ internal class FXFrameController : Controller() {
     private var prevPosY = 0.0
 
     val maximized = SimpleBooleanProperty(false)
-    val resizable = SimpleBooleanProperty(false)
-    val snappable = SimpleBooleanProperty(false)
+    val resizable = SimpleBooleanProperty(true)
+    val snappable = SimpleBooleanProperty(true)
 
     private var snapped = false
 
-    val moveHandle = SimpleObjectProperty<Node>()
+    lateinit var moveHandle: Node
     val viewport: FXFrameViewport by inject()
 
     private val stage get() = primaryStage
@@ -56,6 +56,95 @@ internal class FXFrameController : Controller() {
         prevSizeY = stage.height
         prevPosX = stage.x
         prevPosY = stage.y
+
+        this.initMoveControl()
+
+        animateViewport(0.0, 0.0, 300.0, 300.0, true)
+    }
+
+    private fun initMoveControl() {
+        var dx = 0.0
+        var dy = 0.0
+
+        var startX = 0.0
+        var startY = 0.0
+
+        /**
+         * Event listeners.
+         */
+        moveHandle.setOnMousePressed {
+            if(it.isPrimaryButtonDown) {
+                dx = it.sceneX
+                dy = it.sceneY
+
+                if(maximized.get() || snapped) {
+                    dx = prevSizeX * (it.sceneX / stage.width)
+                    dy = prevSizeY * (it.sceneY / stage.height)
+                } else {
+                    prevSizeX = stage.width
+                    prevSizeY = stage.height
+                    prevPosX = stage.x
+                    prevPosY = stage.y
+                }
+
+                startX = it.screenX
+                startY = moveHandle.prefHeight(stage.height)
+            }
+        }
+
+        moveHandle.setOnMouseDragged {
+            if(it.isPrimaryButtonDown) {
+
+                stage.x = it.screenX - dx
+
+                if(snapped) {
+                    if(it.screenX > startY) {
+                        snapOff()
+                    } else {
+                        val scr = Screen.getScreensForRectangle(it.screenX, it.screenY, 1.0, 1.0)[0].visualBounds
+                        stage.height = scr.height
+                    }
+                } else {
+                    stage.y = it.screenY - dy
+                }
+
+                /**
+                 * Windows Aero Snap Off
+                 */
+                if(maximized.get()) {
+                    stage.width = prevSizeX
+                    stage.height = prevSizeY
+                    setMaximized(false)
+                }
+
+                var toCloseWindow = false
+                if(!snappable.get()) {
+                    toCloseWindow = true
+                } else {
+                    val screens = Screen.getScreensForRectangle(it.screenX, it.screenY, 1.0, 1.0)
+                    if(screens.isEmpty()) {
+                        return@setOnMouseDragged
+                    }
+
+                    //TODO Handle window snapping.
+                }
+            }
+        }
+
+        /**
+         * Double click listener
+         */
+        moveHandle.setOnMouseClicked {
+            if(snappable.get() && (MouseButton.PRIMARY.equals(it.button)) && (it.clickCount == 2)) {
+                maximize()
+            }
+        }
+    }
+
+    private fun snapOff() {
+        stage.width = prevSizeX
+        stage.height = prevSizeY
+        snapped = false
     }
 
     /**
@@ -117,5 +206,36 @@ internal class FXFrameController : Controller() {
 
     private fun setResizable(value: Boolean) {
         resizable.set(value)
+    }
+
+    /**
+     * Animates the viewport window to the passed method parameters
+     */
+    private fun animateViewport(x: Double, y: Double, width: Double, height: Double, transparent: Boolean = false) {
+
+        val xProp = SimpleDoubleProperty(stage.x)
+        val yProp = SimpleDoubleProperty(stage.y)
+        val wProp = SimpleDoubleProperty(stage.width)
+        val hProp = SimpleDoubleProperty(stage.height)
+
+        timeline {
+            keyframe(1.seconds) {
+                if(transparent) {
+                    keyvalue(viewport.root.opacityProperty(), 0.5)
+                } else {
+                    keyvalue(viewport.root.opacityProperty(), 1)
+                }
+
+                keyvalue(xProp, x)
+                keyvalue(yProp, y)
+                keyvalue(wProp, width)
+                keyvalue(hProp, height)
+            }
+        }
+
+        xProp.onChange { stage.x = it }
+        yProp.onChange { stage.y = it }
+        wProp.onChange { stage.width = it }
+        hProp.onChange { stage.height = it }
     }
 }

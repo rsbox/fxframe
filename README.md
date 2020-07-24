@@ -7,23 +7,11 @@ A TornadoFX extension framework which allows a simple construction of custom
 borderless JavaFX stages which behave like native windows.
 
 ## Gradle
-Add the following repository to your Gradle build file to add the RSBox 
-GitHub maven repository.
-
-```kotlin
-repositories {
-    maven(url = "https://dl.bintray.com/rsbox/fxframe")
-}
-```
-
-Once the repository has been accepted into **Maven Central** and or **JCenter**. The following is the
-only thing required.
+Add the following repository to your Gradle build file.
 
 ```kotlin
 repositories {
     jcenter()
-    // or
-    mavenCentral()
 }
 ```
 
@@ -33,7 +21,7 @@ Add the following dependency. **NOTE:** You must also have JavaFX and TornadoFX
  
 ```kotlin
 dependencies {
-    implementation("io.rsbox:fxframe:1.1.0")
+    implementation("io.rsbox:fxframe:1.2.0")
 }
 ```
 
@@ -45,11 +33,19 @@ example defined below.
 class ExampleApp : FXFrameApp() {
 
     override val skin = FXFrameSkin.ARCDARK
-
     override val view = find<MyPrimaryView>()
+
+    init {
+        setFXFrameIcon(Image("/<path to img in resources>.png"))
+    }   
+
+    override fun preload() {
+        enableMoving()
+        enableResizing()
+        enableSnapping()
+    }
    
     companion object {
-
         @JvmStatic
         fun main(args: Array<String>) {
             launch<ExampleApp>()

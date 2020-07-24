@@ -4,6 +4,7 @@ import io.rsbox.fxframe.view.FXFrameViewport
 import io.rsbox.fxframe.view.TransparentWindowView
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.geometry.Rectangle2D
+import javafx.scene.Cursor
 import javafx.scene.Node
 import javafx.scene.image.Image
 import javafx.scene.input.MouseButton
@@ -34,6 +35,9 @@ internal class FXFrameController : Controller() {
      * Interaction Control Logic Start.
      */
 
+    private var moving = false
+    private var resizing = false
+
     private var prevSizeX = 0.0
     private var prevSizeY = 0.0
 
@@ -63,7 +67,137 @@ internal class FXFrameController : Controller() {
         transparentWindow = find<TransparentWindowView>().openModal(StageStyle.TRANSPARENT, modality = Modality.NONE)
         transparentWindow!!.hide()
 
+        this.initResizeControl()
         this.initMoveControl()
+    }
+
+    private fun initResizeControl() {
+        var up = false
+        var right = false
+        var down = false
+        var left = false
+
+        viewport.root.setOnDragDetected {
+            prevSizeX = stage.width
+            prevSizeY = stage.height
+            prevPosX = stage.x
+            prevPosY = stage.y
+        }
+
+        viewport.root.setOnMouseMoved {
+            up = false
+            right = false
+            down = false
+            left = false
+
+            if(it.sceneX <= 5) left = true
+            if(it.sceneY <= 5) up = true
+            if(it.sceneX >= stage.width - 5) right = true
+            if(it.sceneY >= stage.height - 5) down = true
+
+            this.viewport.root.cursor = when {
+                left -> {
+                    when {
+                        up -> Cursor.NW_RESIZE
+                        down -> Cursor.SW_RESIZE
+                        else -> Cursor.W_RESIZE
+                    }
+                }
+                right -> {
+                    when {
+                        up -> Cursor.NE_RESIZE
+                        down -> Cursor.SE_RESIZE
+                        else -> Cursor.E_RESIZE
+                    }
+                }
+                else -> {
+                    when {
+                        up -> Cursor.N_RESIZE
+                        down -> Cursor.S_RESIZE
+                        else -> Cursor.DEFAULT
+                    }
+                }
+            }
+        }
+
+        viewport.root.setOnMouseDragged {
+            if(it.isPrimaryButtonDown) {
+                if(moving) return@setOnMouseDragged
+                resizing = true
+
+                val dw = stage.width
+                val dh = stage.height
+
+                /**
+                 * Horizontal Resizing
+                 */
+                if(left) {
+                    val cw = dw - it.screenX + stage.x
+
+                    if(cw > 0 && cw >= stage.minWidth) {
+                        stage.width = stage.x - it.screenX + stage.width
+                        stage.x = it.screenX
+                    }
+                } else if(right) {
+                    val cw = dw + it.x
+
+                    if(cw > 0 && cw >= stage.minWidth) {
+                        stage.width = it.sceneX
+                    }
+                }
+
+                /**
+                 * Vertical Resizing
+                 */
+                if(up) {
+                    if(snapped) {
+                        stage.height = prevSizeY
+                        snapped = false
+                    } else if((dh > stage.minHeight) || (it.y < 0)) {
+                        stage.height = stage.y - it.screenY + stage.height
+                        stage.y = it.screenY
+                    }
+                } else if(down) {
+                    if(snapped) {
+                        stage.y = prevPosY
+                        snapped = false
+                    } else {
+                        val cw = dh + it.y
+
+                        if(cw > 0 && cw >= stage.height) {
+                            stage.height = it.sceneY
+                        }
+                    }
+                }
+            }
+        }
+
+        viewport.root.setOnMousePressed {
+            if((it.isPrimaryButtonDown) && (!snapped)) {
+                prevSizeY = stage.height
+                prevPosY = stage.y
+            }
+        }
+
+        viewport.root.setOnMouseReleased {
+            if((MouseButton.PRIMARY == it.button) && (!snapped)) {
+                resizing = false
+
+                val scr = Screen.getScreensForRectangle(it.screenX, it.screenY, 1.0, 1.0)[0].visualBounds
+
+                if((stage.y <= scr.minY) && up) {
+                    stage.height = scr.height
+                    stage.y = scr.minY
+                    snapped = true
+                }
+
+                if((it.screenY >= scr.maxY) && down) {
+                    stage.height = scr.height
+                    stage.y = scr.minY
+                    snapped = true
+                }
+            }
+        }
     }
 
     private fun initMoveControl() {
@@ -98,6 +232,8 @@ internal class FXFrameController : Controller() {
 
         moveHandle.setOnMouseDragged {
             if(it.isPrimaryButtonDown) {
+                if(resizing) return@setOnMouseDragged
+                moving = true
 
                 stage.x = it.screenX - dx
 
@@ -187,6 +323,7 @@ internal class FXFrameController : Controller() {
             }
 
             if(it.button == MouseButton.PRIMARY && it.screenX != startX) {
+                moving = false
                 val scr = Screen.getScreensForRectangle(it.screenX, it.screenY, 1.0, 1.0)[0].visualBounds
 
                 /**

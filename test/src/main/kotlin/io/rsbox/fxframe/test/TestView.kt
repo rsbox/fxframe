@@ -10,5 +10,6 @@ class TestView : View("Test Application") {
 
     override val root = pane {
         setPrefSize(1000.0, 750.0)
+        setMinSize(500.0, 500.0)
     }
 }

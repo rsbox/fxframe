@@ -9,13 +9,9 @@ tasks.withType<Wrapper> {
     gradleVersion = Project.gradleVersion
 }
 
-javafx {
-    version = "11"
-    modules = listOf("javafx.base", "javafx.controls", "javafx.graphics", "javafx.swing", "javafx.web")
-}
-
 allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.openjfx.javafxplugin")
 
     group = "io.rsbox"
     version = Project.version
@@ -30,6 +26,11 @@ allprojects {
         implementation(kotlin("stdlib"))
         implementation(kotlin("reflect"))
         implementation(Library.tornadofx)
+    }
+
+    javafx {
+        version = "11"
+        modules = listOf("javafx.base", "javafx.controls", "javafx.graphics", "javafx.swing", "javafx.web")
     }
 
     tasks {

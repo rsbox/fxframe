@@ -20,5 +20,4 @@ class FXFrameController : Controller() {
      */
     internal var icon: Image? = null
 
-
 }

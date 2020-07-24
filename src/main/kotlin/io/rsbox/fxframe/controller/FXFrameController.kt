@@ -179,6 +179,68 @@ internal class FXFrameController : Controller() {
             }
         }
 
+        moveHandle.setOnMouseReleased {
+            transparentWindow!!.hide()
+
+            if(!snappable.get()) {
+                return@setOnMouseReleased
+            }
+
+            if(it.button == MouseButton.PRIMARY && it.screenX != startX) {
+                val scr = Screen.getScreensForRectangle(it.screenX, it.screenY, 1.0, 1.0)[0].visualBounds
+
+                /**
+                 * Snap Left
+                 */
+                if(it.screenX <= scr.minX + 20) {
+                    stage.y = scr.minY
+                    stage.height = scr.height
+                    stage.x = scr.minX
+                    stage.width = scr.width / 2
+
+                    snapped = true
+                }
+
+                /**
+                 * Snap Right
+                 */
+                else if(it.screenX >= scr.maxX - 20) {
+                    stage.y = scr.minY
+                    stage.height = scr.height
+                    stage.width = scr.width / 2
+                    stage.x = scr.maxX - stage.width
+
+                    snapped = true
+                }
+
+                /**
+                 * Snap Top and Bottom
+                 */
+                else if(it.screenY <= scr.minY + 20 || it.screenY >= scr.maxY - 20) {
+                    if(!scr.contains(prevPosX, prevPosY)) {
+                        if(prevSizeX > scr.width) {
+                            prevSizeX = scr.width - 20
+                        }
+
+
+                        if(prevSizeY > scr.height) {
+                            prevSizeY = scr.height - 20
+                        }
+
+                        prevPosX = scr.minX + (scr.width - prevSizeX) / 2
+                        prevPosY = scr.minY + (scr.height - prevSizeY) / 2
+                    }
+
+                    stage.x = scr.minX
+                    stage.y = scr.minY
+                    stage.width = scr.width
+                    stage.height = scr.height
+
+                    setMaximized(true)
+                }
+            }
+        }
+
         /**
          * Double click listener
          */

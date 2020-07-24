@@ -19,6 +19,13 @@ class TestApp : FXFrameApp() {
 
     init {
         setFXFrameIcon(Image("/icon.png"))
+
+        /**
+         * Enable controls
+         */
+        enableMoving()
+        enableResizing()
+        enableSnapping()
     }
 
     companion object {

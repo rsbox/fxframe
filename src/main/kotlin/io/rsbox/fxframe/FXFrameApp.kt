@@ -4,11 +4,10 @@ import javafx.scene.image.Image
 import javafx.stage.Stage
 import javafx.stage.StageStyle
 import io.rsbox.fxframe.controller.FXFrameController
+import io.rsbox.fxframe.view.FXFrameTitleBar
 import io.rsbox.fxframe.view.FXFrameViewport
-import tornadofx.App
-import tornadofx.UIComponent
-import tornadofx.importStylesheet
-import tornadofx.setStageIcon
+import javafx.scene.Node
+import tornadofx.*
 
 /**
  * The Primary FXFrame JavaFX Application abstraction.
@@ -35,6 +34,27 @@ abstract class FXFrameApp : App(FXFrameViewport::class, FXFrameStyle::class) {
         controller.icon = icon
     }
 
+    /**
+     * Enables window dragging.
+     */
+    fun enableMoving(node: Node = find<FXFrameTitleBar>().root) {
+        controller.moveHandle.value = node
+    }
+
+    /**
+     * Enables windows snapping.
+     */
+    fun enableSnapping() {
+        controller.snappable.value = true
+    }
+
+    /**
+     * Enables window resizing.
+     */
+    fun enableResizing() {
+        controller.resizable.value = true
+    }
+
     override fun init() {
         importStylesheet(skin.stylesheet)
 
@@ -48,7 +68,6 @@ abstract class FXFrameApp : App(FXFrameViewport::class, FXFrameStyle::class) {
 
     override fun start(stage: Stage) {
         stage.initStyle(StageStyle.UNDECORATED)
-        stage.isResizable = true
         super.start(stage)
     }
 }

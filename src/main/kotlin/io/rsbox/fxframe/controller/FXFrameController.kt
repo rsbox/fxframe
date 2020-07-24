@@ -13,10 +13,12 @@ class FXFrameController : Controller() {
     /**
      * The initial view object to load.
      */
-    var initView: UIComponent by singleAssign()
+    internal var initView: UIComponent by singleAssign()
 
     /**
      * The stage / window icon.
      */
-    var icon: Image? = null
+    internal var icon: Image? = null
+
+
 }

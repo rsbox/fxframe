@@ -13,6 +13,7 @@ class FXFrameViewport : View() {
 
     init {
         titleProperty.bind(controller.initView.titleProperty)
+
     }
 
     override val root = borderpane {

@@ -7,6 +7,9 @@ import io.rsbox.fxframe.controller.FXFrameController
 import io.rsbox.fxframe.view.FXFrameTitleBar
 import io.rsbox.fxframe.view.FXFrameViewport
 import javafx.scene.Node
+import javafx.scene.Scene
+import javafx.scene.paint.Color
+import javafx.stage.Modality
 import tornadofx.*
 
 /**
@@ -72,8 +75,10 @@ abstract class FXFrameApp : App(FXFrameViewport::class, FXFrameStyle::class) {
     }
 
     override fun start(stage: Stage) {
-        stage.initStyle(StageStyle.UNDECORATED)
+        stage.initStyle(StageStyle.TRANSPARENT)
+
         super.start(stage)
+        stage.scene.fill = Color.TRANSPARENT
 
         this.preload()
         controller.init()

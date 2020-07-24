@@ -1,15 +1,16 @@
 package io.rsbox.fxframe.controller
 
 import io.rsbox.fxframe.view.FXFrameViewport
-import javafx.animation.Interpolator
+import io.rsbox.fxframe.view.TransparentWindowView
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleDoubleProperty
-import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Rectangle2D
 import javafx.scene.Node
 import javafx.scene.image.Image
 import javafx.scene.input.MouseButton
+import javafx.stage.Modality
 import javafx.stage.Screen
+import javafx.stage.Stage
+import javafx.stage.StageStyle
 import tornadofx.*
 
 /**
@@ -27,6 +28,8 @@ internal class FXFrameController : Controller() {
      */
     internal var icon: Image? = null
 
+    internal var transparentWindow: Stage? = null
+
     /**
      * Interaction Control Logic Start.
      */
@@ -39,7 +42,7 @@ internal class FXFrameController : Controller() {
 
     val maximized = SimpleBooleanProperty(false)
     val resizable = SimpleBooleanProperty(true)
-    val snappable = SimpleBooleanProperty(true)
+    val snappable = SimpleBooleanProperty(false)
 
     private var snapped = false
 
@@ -57,9 +60,10 @@ internal class FXFrameController : Controller() {
         prevPosX = stage.x
         prevPosY = stage.y
 
-        this.initMoveControl()
+        transparentWindow = find<TransparentWindowView>().openModal(StageStyle.TRANSPARENT, modality = Modality.NONE)
+        transparentWindow!!.hide()
 
-        animateViewport(0.0, 0.0, 300.0, 300.0, true)
+        this.initMoveControl()
     }
 
     private fun initMoveControl() {
@@ -126,7 +130,51 @@ internal class FXFrameController : Controller() {
                         return@setOnMouseDragged
                     }
 
-                    //TODO Handle window snapping.
+                    val scr = screens[0].visualBounds
+
+                    /**
+                     * Snap left
+                     */
+                    if(it.screenX <= scr.minX + 20) {
+                        val ay = scr.minY
+                        val ah = scr.height
+                        val ax = scr.minX
+                        val aw = scr.width / 2
+
+                        this.animateViewport(ax, ay, aw, ah)
+                    }
+
+                    /**
+                     * Snap Right
+                     */
+                    else if(it.screenX >= scr.maxX - 20) {
+                        val aw = scr.width / 2
+                        val ax = scr.maxX - aw
+                        val ay = scr.minY
+                        val ah = scr.height
+
+                        this.animateViewport(ax, ay, aw, ah)
+                    }
+
+                    /**
+                     * Snap top and bottom
+                     */
+                    else if(it.screenY <= scr.minY + 20 || it.screenY >= scr.maxY - 20) {
+                        val ax = scr.minX
+                        val ay = scr.minY
+                        val aw = scr.width
+                        val ah = scr.height
+
+                        this.animateViewport(ax, ay, aw, ah)
+                    }
+
+                    else {
+                        toCloseWindow = true
+                    }
+                }
+
+                if(toCloseWindow) {
+                    transparentWindow!!.close()
                 }
             }
         }
@@ -211,31 +259,13 @@ internal class FXFrameController : Controller() {
     /**
      * Animates the viewport window to the passed method parameters
      */
-    private fun animateViewport(x: Double, y: Double, width: Double, height: Double, transparent: Boolean = false) {
+    private fun animateViewport(x: Double, y: Double, width: Double, height: Double) {
+        transparentWindow!!.x = x
+        transparentWindow!!.y = y
+        transparentWindow!!.width = width
+        transparentWindow!!.height = height
 
-        val xProp = SimpleDoubleProperty(stage.x)
-        val yProp = SimpleDoubleProperty(stage.y)
-        val wProp = SimpleDoubleProperty(stage.width)
-        val hProp = SimpleDoubleProperty(stage.height)
+        transparentWindow!!.show()
 
-        timeline {
-            keyframe(1.seconds) {
-                if(transparent) {
-                    keyvalue(viewport.root.opacityProperty(), 0.5)
-                } else {
-                    keyvalue(viewport.root.opacityProperty(), 1)
-                }
-
-                keyvalue(xProp, x)
-                keyvalue(yProp, y)
-                keyvalue(wProp, width)
-                keyvalue(hProp, height)
-            }
-        }
-
-        xProp.onChange { stage.x = it }
-        yProp.onChange { stage.y = it }
-        wProp.onChange { stage.width = it }
-        hProp.onChange { stage.height = it }
     }
 }
